@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文件恢复 - 旮旯给木解密</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0c2461, #1e3799, #4a69bd);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            color: #ff9f43;
+            text-shadow: 0 2px 10px rgba(255, 159, 67, 0.4);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #f1f2f6;
+            opacity: 0.9;
+        }
+        
+        .author {
+            font-size: 0.9rem;
+            color: #aaa;
+            margin-top: 5px;
+        }
+        
+        .content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .info-box {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 25px;
+            transition: transform 0.3s, background 0.3s;
+        }
+        
+        .info-box:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.12);
+        }
+        
+        .info-box h2 {
+            color: #74b9ff;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .info-box h2 i {
+            font-size: 1.5rem;
+        }
+        
+        .warning {
+            background: rgba(255, 71, 87, 0.15);
+            border-left: 5px solid #ff4757;
+        }
+        
+        .warning h2 {
+            color: #ff6b81;
+        }
+        
+        .download-section {
+            text-align: center;
+            padding: 30px;
+            background: rgba(0, 184, 148, 0.15);
+            border-radius: 15px;
+            margin: 30px 0;
+            border: 2px dashed rgba(0, 184, 148, 0.4);
+        }
+        
+        .download-btn {
+            display: inline-block;
+            background: linear-gradient(45deg, #00b894, #00cec9);
+            color: white;
+            padding: 18px 45px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            border-radius: 50px;
+            text-decoration: none;
+            margin: 20px 0;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 184, 148, 0.4);
+            border: none;
+            cursor: pointer;
+        }
+        
+        .download-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0, 184, 148, 0.6);
+        }
+        
+        .download-btn:active {
+            transform: scale(0.98);
+        }
+        
+        .note {
+            font-size: 0.9rem;
+            color: #aaa;
+            margin-top: 15px;
+        }
+        
+        .instructions {
+            background: rgba(108, 92, 231, 0.15);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+        
+        .instructions h2 {
+            color: #a29bfe;
+            margin-bottom: 20px;
+        }
+        
+        .steps {
+            list-style-type: none;
+            counter-reset: step-counter;
+        }
+        
+        .steps li {
+            counter-increment: step-counter;
+            margin-bottom: 20px;
+            padding-left: 50px;
+            position: relative;
+        }
+        
+        .steps li:before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background: #6c5ce7;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+        
+        .timer {
+            background: rgba(214, 48, 49, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+            font-size: 1.2rem;
+            color: #ff9f43;
+            font-weight: bold;
+        }
+        
+        .highlight {
+            color: #ff9f43;
+            font-weight: bold;
+        }
+        
+        .ciallo {
+            color: #fd79a8;
+            font-weight: bold;
+            font-style: italic;
+        }
+        
+        .countdown {
+            font-size: 1.8rem;
+            color: #ff6b6b;
+            text-shadow: 0 0 10px rgba(255, 107, 107, 0.7);
+            margin: 10px 0;
+        }
+        
+        .emoji {
+            font-size: 1.5rem;
+            margin-right: 10px;
+        }
+        
+        .secret-code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            font-family: monospace;
+            margin: 15px 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #00cec9;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-lock-open emoji"></i>文件恢复中心</h1>
+            <p class="subtitle">解密被"旮旯给木"加密的文件</p>
+            <p class="author">作者：ciallo0721-cmd</p>
+        </header>
+        
+        <div class="timer">
+            <p><i class="fas fa-clock emoji"></i>剩余恢复时间：</p>
+            <div class="countdown" id="countdown">30天 00:00:00</div>
+            <p>请在倒计时结束前完成文件恢复</p>
+        </div>
+        
+        <div class="content">
+            <div class="info-box">
+                <h2><i class="fas fa-exclamation-triangle"></i>发生了什么？</h2>
+                <p>您的文件已被"旮旯给木"加密软件加密。这是由<span class="ciallo">ciallo0721-cmd</span>开发的一个加密程序。</p>
+                <p>您的文件被加密为特殊的<span class="highlight">.Ciallo.0721.enc</span>格式，需要使用专门的解密工具才能恢复。</p>
+            </div>
+            
+            <div class="info-box warning">
+                <h2><i class="fas fa-skull-crossbones"></i>重要警告</h2>
+                <p>请勿尝试手动修改加密文件，否则可能导致文件永久损坏。</p>
+                <p>不要尝试使用其他解密工具，这可能导致文件无法恢复。</p>
+                <p>请按照下面的步骤操作，确保文件正确恢复。</p>
+            </div>
+        </div>
+        
+        <div class="download-section">
+            <h2><i class="fas fa-download"></i>解密工具下载</h2>
+            <p>下载由作者开发的专用解密工具：</p>
+            
+            <div class="secret-code">
+                密钥：<span class="highlight">cialloanddontplaygalgame</span>
+            </div>
+            
+            <a href="./py/dec.exe" class="download-btn" download>
+                <i class="fas fa-file-download"></i> 下载解密工具 (dec.exe)
+            </a>
+            
+            <p class="note">文件大小：约 8.5 MB | 发布日期：2026年1月17日 | 版本：1.0.0</p>
+            <p class="note"><i class="fas fa-shield-alt"></i> 此工具无病毒威胁</p>
+        </div>
+        
+        <div class="instructions">
+            <h2><i class="fas fa-list-ol"></i>恢复步骤</h2>
+            <ol class="steps">
+                <li>点击上方按钮下载解密工具 <span class="highlight">dec.exe</span></li>
+                <li>将下载的 <span class="highlight">dec.exe</span> 文件复制到被加密文件所在的文件夹</li>
+                <li>双击运行 <span class="highlight">dec.exe</span> 程序</li>
+                <li>程序将自动解密所有被加密的文件</li>
+                <li>解密完成后，加密文件（.Ciallo.0721.enc）将被删除，恢复为原始文件</li>
+                <li>解密完成后，您可以安全删除 <span class="highlight">dec.exe</span> 文件</li>
+            </ol>
+            
+            <div class="info-box" style="margin-top: 20px;">
+                <h2><i class="fas fa-question-circle"></i>常见问题</h2>
+                <p><strong>Q: 解密工具安全吗？</strong><br>
+                A: 是的，这是由作者本人开发的官方解密工具，完全安全。</p>
+                
+                <p><strong>Q: 解密需要付费吗？</strong><br>
+                A: 不需要，完全免费。</p>
+                
+                <p><strong>Q: 30天后还能解密吗？</strong><br>
+                A: 可以，解密工具永久有效，但请在30天内完成恢复以避免意外。</p>
+            </div>
+        </div>
+        
+        <!-- <div class="footer">
+            <p>本网站仅用于教育目的，演示文件加密与解密原理</p>
+            <p>作者：<span class="ciallo">ciallo0721-cmd</span> | 项目地址：<a href="https://github.com/ciallo0721-cmd" style="color:#74b9ff;">GitHub</a></p>
+            <p><i class="fas fa-code"></i> 本项目完全开源，仅供学习交流使用</p>
+            <p>Ciallo～(∠・ω< )⌒☆</p>
+        </div> -->
+    </div>
+    
+    <script>
+        // 30天倒计时
+        function updateCountdown() {
+            const now = new Date();
+            const targetDate = new Date(now);
+            targetDate.setDate(targetDate.getDate() + 30);
+            
+            const timeDiff = targetDate - now;
+            
+            if (timeDiff <= 0) {
+                document.getElementById('countdown').innerHTML = "时间已到期！";
+                return;
+            }
+            
+            const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+            
+            document.getElementById('countdown').innerHTML = 
+                `${days}天 ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        // 初始更新
+        updateCountdown();
+        
+        // 每秒更新一次
+        setInterval(updateCountdown, 1000);
+        
+        // 下载按钮点击事件
+        document.querySelector('.download-btn').addEventListener('click', function(e) {
+            // 这里可以添加下载统计或确认提示
+            console.log('用户开始下载解密工具');
+        });
+    </script>
+</body>
+</html>
